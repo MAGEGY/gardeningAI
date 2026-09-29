@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import GrowingTree from '../components/GrowingTree'
+import GrowVideo from '../components/GrowVideo'
 import { ApiKeyGate, Notice } from '../components/Status'
 import { BookIcon, CalendarIcon, CameraIcon, LeafIcon, PulseIcon } from '../components/icons'
 import { useI18n } from '../i18n'
@@ -31,7 +31,7 @@ export default function Home() {
   return (
     <div className="page">
       <div className="hero">
-        <GrowingTree />
+        <GrowVideo className="hero-video" />
         <div className="hero-text">
           <h1>Gardening AI</h1>
           <p className="muted">{t('home.tagline')}</p>

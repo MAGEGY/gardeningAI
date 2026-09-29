@@ -1,12 +1,12 @@
 import { UI_LANGS, useI18n } from '../i18n'
-import GrowingTree from './GrowingTree'
+import GrowVideo from './GrowVideo'
 import { LeafIcon } from './icons'
 
 export default function LanguageScreen() {
   const { setLang } = useI18n()
   return (
     <div className="onboard">
-      <GrowingTree />
+      <GrowVideo className="bg-video" />
       <div className="onboard-card">
         <div className="onboard-brand">
           <LeafIcon width={40} height={40} />

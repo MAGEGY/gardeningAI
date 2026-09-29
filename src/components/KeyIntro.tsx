@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useI18n } from '../i18n'
 import { setApiKeySecure } from '../lib/secureKey'
 import { dismissKeyPrompt } from '../lib/storage'
-import GrowingTree from './GrowingTree'
+import GrowVideo from './GrowVideo'
 import { LeafIcon } from './icons'
 
 export default function KeyIntro({ onDone }: { onDone: () => void }) {
@@ -16,7 +16,7 @@ export default function KeyIntro({ onDone }: { onDone: () => void }) {
 
   return (
     <div className="onboard">
-      <GrowingTree />
+      <GrowVideo className="bg-video" />
       <div className="onboard-card wide">
         <div className="onboard-brand">
           <LeafIcon width={36} height={36} />
