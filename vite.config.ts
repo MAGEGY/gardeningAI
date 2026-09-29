@@ -5,7 +5,7 @@ import { VitePWA } from 'vite-plugin-pwa'
 // https://vite.dev/config/
 export default defineConfig({
   // GitHub Pages project site needs /gardeningAI/; local dev stays at /
-  base: process.env.VITE_BASE ?? '/',
+  base: process.env.GHPAGES ? '/gardeningAI/' : '/',
   plugins: [
     react(),
     VitePWA({
