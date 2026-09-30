@@ -230,6 +230,8 @@ const en: Dict = {
   'home.dueBanner': 'You have {n} garden task(s) due today or overdue',
   'home.viewCal': 'Open calendar',
   'garden.add': 'Add to my garden',
+  'settings.shareLink': 'Copy device link',
+  'settings.copied': 'Link copied — open it on another device to import the key.',
 }
 
 const ar: Dict = {
@@ -448,6 +450,8 @@ const ar: Dict = {
   'home.dueBanner': 'لديك {n} مهمة مستحقة اليوم أو متأخرة',
   'home.viewCal': 'افتح التقويم',
   'garden.add': 'أضف إلى حديقتي',
+  'settings.shareLink': 'نسخ رابط الأجهزة',
+  'settings.copied': 'تم نسخ الرابط — افتحه على جهاز آخر لاستيراد المفتاح.',
 }
 
 const fr: Dict = {
@@ -666,6 +670,8 @@ const fr: Dict = {
   'home.dueBanner': "Vous avez {n} tâche(s) de jardin dues aujourd'hui ou en retard",
   'home.viewCal': 'Ouvrir le calendrier',
   'garden.add': 'Ajouter à mon jardin',
+  'settings.shareLink': "Copier le lien d'appareil",
+  'settings.copied': 'Lien copié — ouvrez-le sur un autre appareil pour importer la clé.',
 }
 
 const es: Dict = {
@@ -884,6 +890,8 @@ const es: Dict = {
   'home.dueBanner': 'Tienes {n} tarea(s) de jardín para hoy o vencidas',
   'home.viewCal': 'Abrir calendario',
   'garden.add': 'Añadir a mi jardín',
+  'settings.shareLink': 'Copiar enlace de dispositivo',
+  'settings.copied': 'Enlace copiado — ábrelo en otro dispositivo para importar la clave.',
 }
 
 const de: Dict = {
@@ -1102,6 +1110,8 @@ const de: Dict = {
   'home.dueBanner': 'Du hast {n} Gartenaufgabe(n) heute fällig oder überfällig',
   'home.viewCal': 'Kalender öffnen',
   'garden.add': 'Zu meinem Garten',
+  'settings.shareLink': 'Gerätelink kopieren',
+  'settings.copied': 'Link kopiert — auf einem anderen Gerät öffnen, um den Schlüssel zu importieren.',
 }
 
 const DICT: Record<UiLang, Dict> = { en, ar, fr, es, de }

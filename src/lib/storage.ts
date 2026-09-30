@@ -8,9 +8,19 @@ const MAX_HISTORY = 30
 
 export const DEFAULT_SETTINGS: Settings = {
   apiKey: '',
-  model: 'gemini-2.5-flash',
+  model: 'gemini-3.8-flash',
   language: 'English',
 }
+
+const DEPRECATED_MODELS = new Set([
+  'gemini-2.5-flash',
+  'gemini-2.5-flash-lite',
+  'gemini-2.5-pro',
+  'gemini-2.0-flash',
+  'gemini-2.0-flash-lite',
+  'gemini-1.5-flash',
+  'gemini-1.5-pro',
+])
 
 export function loadSettings(): Settings {
   let parsed: Partial<Settings> = {}
@@ -21,7 +31,11 @@ export function loadSettings(): Settings {
     /* keep defaults */
   }
   // apiKey is never persisted in this blob — it's supplied from the secure store
-  return { ...DEFAULT_SETTINGS, ...parsed, apiKey: apiKeyCached() }
+  const merged = { ...DEFAULT_SETTINGS, ...parsed, apiKey: apiKeyCached() }
+  if (!merged.model || DEPRECATED_MODELS.has(merged.model)) {
+    merged.model = DEFAULT_SETTINGS.model
+  }
+  return merged
 }
 
 export function saveSettings(settings: Settings): void {

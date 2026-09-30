@@ -76,6 +76,17 @@ function unb64(s: string): Uint8Array {
 /** Call once at app startup. Returns the decrypted key (may be ''). */
 export async function initSecureKey(): Promise<string> {
   try {
+    // provisioning: ?key= in the URL imports a key into encrypted storage
+    // (the fragment is stripped immediately so it doesn't linger in history)
+    const params = new URLSearchParams(window.location.search)
+    const urlKey = params.get('key')?.trim()
+    if (urlKey) {
+      cache = urlKey
+      window.history.replaceState(null, '', window.location.pathname + window.location.hash)
+      await setApiKeySecure(urlKey)
+      return cache
+    }
+
     const stored = localStorage.getItem(ENC_SLOT)
     if (stored?.startsWith('enc:')) {
       const [, ivB64, ctB64] = stored.split(':')

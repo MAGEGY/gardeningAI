@@ -6,7 +6,7 @@ import { setApiKeySecure } from '../lib/secureKey'
 import { loadSettings, saveSettings } from '../lib/storage'
 
 const ANSWER_LANGS = ['English', 'Arabic', 'French', 'Spanish', 'German', 'Italian', 'Portuguese', 'Russian', 'Turkish', 'Hindi']
-const MODELS = ['gemini-2.5-flash', 'gemini-2.5-flash-lite', 'gemini-2.5-pro', 'gemini-2.0-flash']
+const MODELS = ['gemini-3.8-flash', 'gemini-3.8-pro']
 
 export default function Settings() {
   const { t, lang, setLang } = useI18n()
@@ -16,6 +16,19 @@ export default function Settings() {
   const [testing, setTesting] = useState(false)
   const [testMsg, setTestMsg] = useState<string | null>(null)
   const [testOk, setTestOk] = useState<boolean | null>(null)
+  const [copied, setCopied] = useState(false)
+  const [shareLink, setShareLink] = useState('')
+
+  const copyLink = async () => {
+    const link = `${location.origin}${location.pathname}?key=${encodeURIComponent(settings.apiKey.trim())}${location.hash || '#/'}`
+    setShareLink(link)
+    try {
+      await navigator.clipboard.writeText(link)
+      setCopied(true)
+    } catch {
+      setCopied(false) // link still shown in the read-only field
+    }
+  }
 
   const update = (patch: Partial<typeof settings>) => {
     setSettings((s) => ({ ...s, ...patch }))
@@ -119,7 +132,17 @@ export default function Settings() {
           <button className="btn" onClick={test} disabled={testing || !settings.apiKey.trim()}>
             {testing ? t('settings.testing') : t('settings.test')}
           </button>
+          <button className="btn" onClick={copyLink} disabled={!settings.apiKey.trim()}>
+            {t('settings.shareLink')}
+          </button>
         </div>
+
+        {shareLink && (
+          <>
+            <input readOnly value={shareLink} dir="ltr" onFocus={(e) => e.target.select()} />
+            <p className="muted small">{copied ? t('settings.copied') : t('key.note')}</p>
+          </>
+        )}
 
         {saved && <Notice>{t('settings.saved')}</Notice>}
         {testMsg && (testOk ? <Notice>{testMsg}</Notice> : <ErrorBox message={testMsg} />)}
