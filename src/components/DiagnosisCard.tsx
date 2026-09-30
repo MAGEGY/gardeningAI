@@ -13,10 +13,10 @@ const URGENCY_CLASS: Record<string, string> = {
   low: 'green', medium: 'amber', high: 'red', immediate: 'red',
 }
 
-function List({ title, items }: { title: string; items?: string[] }) {
+function List({ title, items, tint }: { title: string; items?: string[]; tint?: string }) {
   if (!items?.length) return null
   return (
-    <section>
+    <section className={`sec${tint ? ` ${tint}` : ''}`}>
       <h3>{title}</h3>
       <ul className="ticks">
         {items.map((s, i) => <li key={i}>{s}</li>)}
@@ -82,7 +82,7 @@ export default function DiagnosisCard({ dx }: { dx: Diagnosis }) {
       ))}
 
       {dx.treatment && (dx.treatment.immediate?.length || dx.treatment.organic?.length || dx.treatment.chemical?.length) ? (
-        <section>
+        <section className="sec sec-amber">
           <h3>{t('dx.treatment')}</h3>
           <div className="treatment-grid">
             {dx.treatment.immediate?.length > 0 && (
@@ -113,10 +113,10 @@ export default function DiagnosisCard({ dx }: { dx: Diagnosis }) {
         </section>
       ) : null}
 
-      <List title={t('dx.prevention')} items={dx.prevention} />
+      <List title={t('dx.prevention')} items={dx.prevention} tint="sec-teal" />
 
       {dx.recoveryPlan && (
-        <section>
+        <section className="sec sec-blue">
           <h3>{t('dx.recovery')}</h3>
           <p>{dx.recoveryPlan}</p>
         </section>

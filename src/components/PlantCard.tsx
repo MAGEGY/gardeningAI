@@ -77,7 +77,7 @@ export default function PlantCard({
       {plant.description && <p className="lead">{plant.description}</p>}
 
       {plant.characteristics?.length > 0 && (
-        <section>
+        <section className="sec sec-green">
           <h3>{t('plant.characteristics')}</h3>
           <ul className="ticks">
             {plant.characteristics.map((c, i) => <li key={i}>{c}</li>)}
@@ -85,7 +85,7 @@ export default function PlantCard({
         </section>
       )}
 
-      <section>
+      <section className="sec sec-blue">
         <h3>{t('plant.irrigation')}</h3>
         <div className="info-grid">
           <InfoItem label={t('f.frequency')} value={plant.irrigation?.frequency} />
@@ -95,7 +95,7 @@ export default function PlantCard({
         </div>
       </section>
 
-      <section>
+      <section className="sec sec-amber">
         <h3>{t('plant.planting')}</h3>
         <div className="info-grid">
           <InfoItem label={t('f.season')} value={plant.planting?.season} />
@@ -107,7 +107,7 @@ export default function PlantCard({
         </div>
       </section>
 
-      <section>
+      <section className="sec sec-violet">
         <h3>{t('plant.care')}</h3>
         <div className="info-grid">
           <InfoItem label={t('f.sunlight')} value={plant.care?.sunlight} />
@@ -120,7 +120,7 @@ export default function PlantCard({
       </section>
 
       {plant.uses?.length > 0 && (
-        <section>
+        <section className="sec sec-teal">
           <h3>{t('plant.uses')}</h3>
           <ul className="ticks">
             {plant.uses.map((u, i) => <li key={i}>{u}</li>)}
@@ -129,7 +129,7 @@ export default function PlantCard({
       )}
 
       {plant.notes?.length > 0 && (
-        <section>
+        <section className="sec sec-rose">
           <h3>{t('plant.notes')}</h3>
           <ul className="ticks">
             {plant.notes.map((n, i) => <li key={i}>{n}</li>)}
@@ -138,7 +138,7 @@ export default function PlantCard({
       )}
 
       {plant.alternatives?.length > 0 && (
-        <section>
+        <section className="sec sec-gray">
           <h3>{t('plant.alsoBe')}</h3>
           <div className="chips">
             {plant.alternatives.map((a) => (
@@ -151,7 +151,7 @@ export default function PlantCard({
       )}
 
       {plant.relatedPlants?.length > 0 && (
-        <section>
+        <section className="sec sec-gray">
           <h3>{t('plant.related')}</h3>
           <div className="chips">
             {plant.relatedPlants.map((r) => (

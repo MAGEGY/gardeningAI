@@ -153,6 +153,30 @@ input:focus, select:focus { outline: 2px solid var(--green-500); outline-offset:
 }
 .result section { border-top: 1px solid var(--line); padding-top: 6px; margin-top: 8px; }
 
+/* tinted info sections */
+.result section.sec {
+  border-top: none;
+  border-inline-start: 4px solid transparent;
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-top: 10px;
+}
+.sec h3 { margin-top: 0; }
+.sec-green  { background: #edf5ee; border-inline-start-color: #6fae7c; }
+.sec-green h3  { color: #3d7a4c; }
+.sec-blue   { background: #eaf2fa; border-inline-start-color: #6fa3d4; }
+.sec-blue h3   { color: #35648f; }
+.sec-amber  { background: #faf3e2; border-inline-start-color: #d9b56a; }
+.sec-amber h3  { color: #8a6420; }
+.sec-violet { background: #f1edfa; border-inline-start-color: #9d8bd0; }
+.sec-violet h3 { color: #6551a3; }
+.sec-teal   { background: #e8f5f2; border-inline-start-color: #63b3a4; }
+.sec-teal h3   { color: #2f7a6c; }
+.sec-rose   { background: #faedef; border-inline-start-color: #d78f9a; }
+.sec-rose h3   { color: #a04a57; }
+.sec-gray   { background: #f1f3f1; border-inline-start-color: #9aa79c; }
+.sec-gray h3   { color: #5b6b5e; }
+
 .hero {
   position: relative;
   overflow: hidden;
