@@ -4,7 +4,7 @@ import PlantCard from '../components/PlantCard'
 import { ApiKeyGate, ErrorBox, Spinner } from '../components/Status'
 import { SearchIcon } from '../components/icons'
 import { useI18n } from '../i18n'
-import { identifyPlant, searchPlant } from '../lib/gemini'
+import { identifyPlant, searchPlant, suggestPlants } from '../lib/gemini'
 import { addPlant } from '../lib/garden'
 import { addHistory, loadSettings } from '../lib/storage'
 import type { CapturedPhoto, PlantProfile } from '../types'
@@ -14,17 +14,31 @@ export default function Knowledge() {
   const [query, setQuery] = useState('')
   const [photoMode, setPhotoMode] = useState(false)
   const [result, setResult] = useState<PlantProfile | null>(null)
+  const [suggestions, setSuggestions] = useState<string[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const run = async (fn: () => Promise<PlantProfile>, title: string, thumb?: string) => {
+  const run = async (
+    fn: () => Promise<PlantProfile>,
+    title: string,
+    thumb?: string,
+    suggestQuery?: string,
+  ) => {
     setLoading(true)
     setError(null)
     setResult(null)
+    setSuggestions([])
     try {
       const r = await fn()
       setResult(r)
       addHistory({ kind: 'search', title: r.commonName || title, thumbnail: thumb, payload: r })
+      if (!r.identified && suggestQuery) {
+        try {
+          setSuggestions(await suggestPlants(loadSettings(), suggestQuery))
+        } catch {
+          setSuggestions([])
+        }
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e))
     } finally {
@@ -36,7 +50,7 @@ export default function Knowledge() {
     const term = q.trim()
     if (!term || loading) return
     setQuery(term)
-    void run(() => searchPlant(loadSettings(), term), term)
+    void run(() => searchPlant(loadSettings(), term), term, undefined, term)
   }
 
   const onPhoto = (photo: CapturedPhoto) => {
@@ -76,6 +90,19 @@ export default function Knowledge() {
 
       {loading && <Spinner label={t('know.looking')} />}
       {error && <ErrorBox message={error} />}
+      {suggestions.length > 0 && (
+        <div className="card">
+          <h3>{t('know.suggest')}</h3>
+          <div className="chips">
+            {suggestions.map((s) => (
+              <button key={s} className="chip" onClick={() => search(s)}>
+                {s}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {result && <PlantCard plant={result} onSelectRelated={search} />}
       {result?.identified && (
         <button

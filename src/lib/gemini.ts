@@ -1,4 +1,5 @@
 import type { CapturedPhoto, Diagnosis, PlantProfile, SeasonalPlan, Settings } from '../types'
+import { builtinApiKey, builtinQuotaLeft, consumeBuiltin } from './builtinKey'
 
 const API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models'
 
@@ -141,14 +142,23 @@ const okSchema = {
 }
 
 async function generate<T>(settings: Settings, parts: unknown[], schema: object): Promise<T> {
-  const apiKey = settings.apiKey.trim()
+  let apiKey = settings.apiKey.trim()
+  let builtin = false
   if (!apiKey) {
-    throw new GeminiError('No API key configured. Add your Gemini API key in Settings.')
+    if (builtinQuotaLeft() > 0) {
+      apiKey = builtinApiKey()
+      builtin = true
+    } else {
+      throw new GeminiError(
+        'Free trial uses are over for today — add your own free Gemini API key in Settings.',
+      )
+    }
   }
-  const model = settings.model.trim().replace(/^models\//, '') || 'gemini-2.5-flash'
+  const model = settings.model.trim().replace(/^models\//, '') || 'gemini-3.8-flash'
 
   let res: Response
   try {
+    if (builtin) consumeBuiltin()
     res = await fetch(
       `${API_BASE}/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`,
       {
@@ -221,12 +231,31 @@ export async function diagnosePlant(settings: Settings, photo: CapturedPhoto): P
 export async function searchPlant(settings: Settings, query: string): Promise<PlantProfile> {
   const prompt = [
     `You are a botanical encyclopedia. Provide a complete botanical and horticultural profile for the plant "${query}".`,
-    'Accept common names, scientific names, and names in any language. If the name is ambiguous, use the most common garden/houseplant match and put the other candidates in alternatives.',
-    'If no real plant matches the name, set identified=false and explain in description.',
+    'Accept common names, scientific names, transliterations, and names in any language or script. Tolerate misspellings.',
+    'If the name is ambiguous, use the most common garden/houseplant match and put the other candidates in alternatives.',
+    'Set identified=true whenever any reasonable plant match exists. Only set identified=false if nothing plant-like matches at all — and still put your best guesses in alternatives.',
     'Fill every field with practical, specific information a gardener can act on.',
     `Write all human-readable text in ${settings.language || 'English'}. Keep scientific names in Latin.`,
   ].join(' ')
   return generate<PlantProfile>(settings, [{ text: prompt }], plantSchema)
+}
+
+const suggestSchema = {
+  type: 'OBJECT',
+  properties: {
+    suggestions: { type: 'ARRAY', items: STR, description: 'up to 6 plant names' },
+  },
+  required: ['suggestions'],
+}
+
+export async function suggestPlants(settings: Settings, query: string): Promise<string[]> {
+  const prompt = [
+    `A user searched for the plant "${query}" but no exact match was found.`,
+    'List up to 6 real plants that are the closest or most likely intended matches — fix spelling, transliteration, or language issues.',
+    `Output only plant names in ${settings.language || 'English'}.`,
+  ].join(' ')
+  const r = await generate<{ suggestions: string[] }>(settings, [{ text: prompt }], suggestSchema)
+  return r.suggestions ?? []
 }
 
 export async function seasonalPlan(

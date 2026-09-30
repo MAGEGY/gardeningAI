@@ -40,6 +40,9 @@ const en: Dict = {
   'gate.title': 'AI features need an API key',
   'gate.how': 'How to get a free key',
   'gate.open': 'Open Settings',
+  'gate.trial': 'No key yet — you have {n} free AI use(s) left today. Add your own free key for unlimited use.',
+  'gate.exhausted': 'Free AI uses finished for today — add your own free key to continue.',
+  'know.suggest': 'Did you mean',
 
   'home.tagline': "Point your camera at any plant to name it, diagnose what's wrong, and learn how to keep it thriving.",
   'home.recent': 'Recent',
@@ -260,6 +263,9 @@ const ar: Dict = {
   'gate.title': 'ميزات الذكاء الاصطناعي تحتاج إلى مفتاح API',
   'gate.how': 'كيف تحصل على مفتاح مجاني',
   'gate.open': 'فتح الإعدادات',
+  'gate.trial': 'لا يوجد مفتاح بعد — لديك {n} استخدام مجاني متبقٍ اليوم. أضف مفتاحك المجاني للاستخدام غير المحدود.',
+  'gate.exhausted': 'انتهت الاستخدامات المجانية لليوم — أضف مفتاحك المجاني للمتابعة.',
+  'know.suggest': 'هل تقصد',
 
   'home.tagline': 'وجّه الكاميرا نحو أي نبتة لتعرف اسمها، وتشخّص مشاكلها، وتتعلم كيفية العناية بها.',
   'home.recent': 'الأخيرة',
@@ -480,6 +486,9 @@ const fr: Dict = {
   'gate.title': "Les fonctions IA nécessitent une clé API",
   'gate.how': 'Comment obtenir une clé gratuite',
   'gate.open': 'Ouvrir les réglages',
+  'gate.trial': 'Pas encore de clé — il vous reste {n} utilisation(s) IA gratuites aujourd’hui. Ajoutez votre propre clé pour un usage illimité.',
+  'gate.exhausted': 'Utilisations gratuites épuisées pour aujourd’hui — ajoutez votre clé gratuite pour continuer.',
+  'know.suggest': 'Vouliez-vous dire',
 
   'home.tagline': "Pointez votre caméra sur une plante pour la nommer, diagnostiquer ses problèmes et apprendre à la faire prospérer.",
   'home.recent': 'Récents',
@@ -700,6 +709,9 @@ const es: Dict = {
   'gate.title': 'Las funciones de IA necesitan una clave API',
   'gate.how': 'Cómo obtener una clave gratuita',
   'gate.open': 'Abrir ajustes',
+  'gate.trial': 'Sin clave aún — te quedan {n} uso(s) de IA gratis hoy. Añade tu propia clave para uso ilimitado.',
+  'gate.exhausted': 'Usos gratuitos agotados por hoy — añade tu clave gratuita para continuar.',
+  'know.suggest': 'Quizás quisiste decir',
 
   'home.tagline': 'Apunta tu cámara a cualquier planta para nombrarla, diagnosticar sus problemas y aprender a cuidarla.',
   'home.recent': 'Recientes',
@@ -920,6 +932,9 @@ const de: Dict = {
   'gate.title': 'KI-Funktionen benötigen einen API-Schlüssel',
   'gate.how': 'So erhältst du einen kostenlosen Schlüssel',
   'gate.open': 'Einstellungen öffnen',
+  'gate.trial': 'Noch kein Schlüssel — dir bleiben heute {n} kostenlose KI-Nutzung(en). Füge deinen eigenen Schlüssel für unbegrenzte Nutzung hinzu.',
+  'gate.exhausted': 'Kostenlose Nutzung für heute aufgebraucht — füge deinen kostenlosen Schlüssel hinzu.',
+  'know.suggest': 'Meintest du',
 
   'home.tagline': 'Richte die Kamera auf eine Pflanze, um sie zu benennen, Probleme zu diagnostizieren und zu lernen, wie sie gedeiht.',
   'home.recent': 'Zuletzt',
