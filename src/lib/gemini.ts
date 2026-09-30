@@ -158,7 +158,6 @@ async function generate<T>(settings: Settings, parts: unknown[], schema: object)
 
   let res: Response
   try {
-    if (builtin) consumeBuiltin()
     res = await fetch(
       `${API_BASE}/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`,
       {
@@ -189,6 +188,9 @@ async function generate<T>(settings: Settings, parts: unknown[], schema: object)
     if (res.status === 429) msg += ' — you may have hit the free-tier rate limit; wait a moment and retry.'
     throw new GeminiError(msg)
   }
+
+  // count the trial use only once the request actually succeeded
+  if (builtin) consumeBuiltin()
 
   const data = await res.json()
   const text = data?.candidates?.[0]?.content?.parts
