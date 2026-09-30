@@ -6,8 +6,23 @@ import { loadSettings } from '../lib/storage'
 
 export function Spinner({ label }: { label: string }) {
   return (
-    <div className="spinner-wrap">
-      <div className="spinner" />
+    <div className="spinner-wrap" role="status" aria-live="polite">
+      <svg className="hourglass" viewBox="0 0 48 72" aria-hidden="true">
+        <path
+          className="hg-glass"
+          d="M8 6 H40 C40 20 34 28 24 34 C14 28 8 20 8 6 Z
+             M8 66 H40 C40 52 34 44 24 38 C14 44 8 52 8 66 Z"
+        />
+        <path className="hg-cap" d="M5 6 H43 M5 66 H43" />
+        <path
+          className="hg-sand hg-top"
+          d="M13 11 H35 C35 18 31 26 24 31 C17 26 13 18 13 11 Z"
+        />
+        <path
+          className="hg-sand hg-bot"
+          d="M11 62 H37 C37 55 32 47 24 41 C16 47 11 55 11 62 Z"
+        />
+      </svg>
       <p>{label}</p>
     </div>
   )
