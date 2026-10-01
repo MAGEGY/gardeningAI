@@ -65,7 +65,10 @@ a { color: var(--green-700); }
   margin: 0 auto;
   padding: 18px 16px 96px;
 }
-.page { display: flex; flex-direction: column; gap: 14px; }
+.page { display: flex; flex-direction: column; gap: 14px; animation: page-in 0.28s ease both; }
+@keyframes page-in {
+  from { opacity: 0; transform: translateY(8px); }
+}
 
 .bottom-nav {
   position: fixed;
@@ -114,6 +117,15 @@ a { color: var(--green-700); }
 .btn.small { padding: 6px 10px; font-size: 0.82rem; }
 .btn.ghost { border-color: transparent; color: var(--muted); }
 .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+
+.btn, .chip, .cal-day, .feature, .task-row, .suggest-item, .history-item {
+  transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, transform 0.12s ease;
+}
+.btn:active:not(:disabled) { transform: translateY(1px); }
+.btn:focus-visible, .chip:focus-visible, .cal-day:focus-visible {
+  outline: 2px solid var(--green-500);
+  outline-offset: 2px;
+}
 
 input, select {
   width: 100%;
@@ -240,7 +252,7 @@ input:focus, select:focus { outline: 2px solid var(--green-500); outline-offset:
   flex-direction: column;
   gap: 4px;
 }
-.feature:hover { border-color: var(--green-500); }
+.feature:hover { border-color: var(--green-500); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(46, 125, 50, 0.1); }
 .feature h3 { margin: 4px 0 0; }
 .feature p { margin: 0; color: var(--muted); font-size: 0.88rem; }
 .feature ul { margin-top: 4px; }
@@ -648,10 +660,12 @@ ul.ticks.compact li::before { top: 8px; width: 6px; height: 6px; }
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 7px 0;
+  padding: 7px 4px;
   border-top: 1px solid var(--line);
+  border-radius: 8px;
   flex-wrap: wrap;
 }
+.task-row:hover { background: #f3f7f2; }
 .task-title { flex: 1; min-width: 140px; font-size: 0.92rem; }
 .task-actions { display: flex; gap: 6px; }
 .plant-thumb {
@@ -690,3 +704,26 @@ ul.ticks.compact li::before { top: 8px; width: 6px; height: 6px; }
 }
 .suggest-head { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
 .suggest-head strong { font-size: 0.9rem; }
+.suggest-item:hover { background: var(--green-100); }
+
+/* empty states */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px 16px;
+  color: var(--muted);
+  text-align: center;
+  background: var(--bg);
+  border: 1px dashed var(--line);
+  border-radius: 10px;
+  font-size: 0.92rem;
+}
+.empty svg { opacity: 0.5; }
+.empty p { margin: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .page { animation: none; }
+  .btn, .chip, .cal-day, .feature, .task-row, .suggest-item, .history-item { transition: none; }
+}

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import GrowVideo from '../components/GrowVideo'
-import { ApiKeyGate, Notice } from '../components/Status'
+import { ApiKeyGate, EmptyState, Notice } from '../components/Status'
 import { BookIcon, CalendarIcon, CameraIcon, LeafIcon, PulseIcon } from '../components/icons'
 import { useI18n } from '../i18n'
 import { dueTasks } from '../lib/garden'
@@ -64,10 +64,10 @@ export default function Home() {
         ))}
       </div>
 
-      {history.length > 0 && (
-        <section>
-          <div className="section-head">
-            <h2>{t('home.recent')}</h2>
+      <section>
+        <div className="section-head">
+          <h2>{t('home.recent')}</h2>
+          {history.length > 0 && (
             <button
               className="btn small ghost"
               onClick={() => {
@@ -77,7 +77,11 @@ export default function Home() {
             >
               {t('home.clear')}
             </button>
-          </div>
+          )}
+        </div>
+        {history.length === 0 ? (
+          <EmptyState icon={<LeafIcon width={26} height={26} />} text={t('home.noHistory')} />
+        ) : (
           <div className="history-grid">
             {history.slice(0, 9).map((h) => (
               <div className="history-item" key={h.id}>
@@ -97,8 +101,8 @@ export default function Home() {
               </div>
             ))}
           </div>
-        </section>
-      )}
+        )}
+      </section>
     </div>
   )
 }

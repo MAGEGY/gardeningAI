@@ -46,6 +46,7 @@ const en: Dict = {
 
   'home.tagline': "Point your camera at any plant to name it, diagnose what's wrong, and learn how to keep it thriving.",
   'home.recent': 'Recent',
+  'home.noHistory': 'No results yet — identify, diagnose or search to see them here.',
   'home.clear': 'Clear',
   'kind.identify': 'Identified',
   'kind.diagnose': 'Health check',
@@ -269,6 +270,7 @@ const ar: Dict = {
 
   'home.tagline': 'وجّه الكاميرا نحو أي نبتة لتعرف اسمها، وتشخّص مشاكلها، وتتعلم كيفية العناية بها.',
   'home.recent': 'الأخيرة',
+  'home.noHistory': 'لا نتائج بعد — حدّد نبتة، شخّصها أو ابحث لتظهر هنا.',
   'home.clear': 'مسح',
   'kind.identify': 'تم التعرف',
   'kind.diagnose': 'فحص صحي',
@@ -492,6 +494,7 @@ const fr: Dict = {
 
   'home.tagline': "Pointez votre caméra sur une plante pour la nommer, diagnostiquer ses problèmes et apprendre à la faire prospérer.",
   'home.recent': 'Récents',
+  'home.noHistory': 'Aucun résultat — identifiez, diagnostiquez ou cherchez pour les voir ici.',
   'home.clear': 'Effacer',
   'kind.identify': 'Identifié',
   'kind.diagnose': 'Bilan de santé',
@@ -715,6 +718,7 @@ const es: Dict = {
 
   'home.tagline': 'Apunta tu cámara a cualquier planta para nombrarla, diagnosticar sus problemas y aprender a cuidarla.',
   'home.recent': 'Recientes',
+  'home.noHistory': 'Aún no hay resultados — identifica, diagnostica o busca para verlos aquí.',
   'home.clear': 'Borrar',
   'kind.identify': 'Identificada',
   'kind.diagnose': 'Revisión',
@@ -938,6 +942,7 @@ const de: Dict = {
 
   'home.tagline': 'Richte die Kamera auf eine Pflanze, um sie zu benennen, Probleme zu diagnostizieren und zu lernen, wie sie gedeiht.',
   'home.recent': 'Zuletzt',
+  'home.noHistory': 'Noch keine Ergebnisse — identifiziere, diagnostiziere oder suche, um sie hier zu sehen.',
   'home.clear': 'Löschen',
   'kind.identify': 'Erkannt',
   'kind.diagnose': 'Gesundheitscheck',

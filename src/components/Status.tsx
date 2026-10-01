@@ -32,6 +32,15 @@ export function ErrorBox({ message }: { message: string }) {
   return <div className="notice error">{message}</div>
 }
 
+export function EmptyState({ icon, text }: { icon?: ReactNode; text: string }) {
+  return (
+    <div className="empty">
+      {icon}
+      <p>{text}</p>
+    </div>
+  )
+}
+
 export function Notice({ children, tone = 'info' }: { children: ReactNode; tone?: 'info' | 'warn' }) {
   return <div className={`notice ${tone}`}>{children}</div>
 }

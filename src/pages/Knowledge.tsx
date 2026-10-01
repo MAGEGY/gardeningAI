@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import PhotoInput from '../components/PhotoInput'
 import PlantCard from '../components/PlantCard'
-import { ApiKeyGate, ErrorBox, Spinner } from '../components/Status'
+import { ApiKeyGate, EmptyState, ErrorBox, Spinner } from '../components/Status'
 import { SearchIcon } from '../components/icons'
 import { useI18n } from '../i18n'
 import { identifyPlant, searchPlant, suggestPlants } from '../lib/gemini'
@@ -61,7 +61,6 @@ export default function Knowledge() {
   return (
     <div className="page">
       <h1>{t('know.title')}</h1>
-      <p className="muted">{t('know.desc')}</p>
       <ApiKeyGate />
 
       <form
@@ -87,6 +86,10 @@ export default function Knowledge() {
       </button>
 
       {photoMode && <PhotoInput onPhoto={onPhoto} />}
+
+      {!result && !loading && !error && suggestions.length === 0 && (
+        <EmptyState icon={<SearchIcon width={26} height={26} />} text={t('know.desc')} />
+      )}
 
       {loading && <Spinner label={t('know.looking')} />}
       {error && <ErrorBox message={error} />}
