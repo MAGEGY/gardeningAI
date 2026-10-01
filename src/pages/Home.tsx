@@ -17,7 +17,7 @@ const FEATURES = [
 ] as const
 
 export default function Home() {
-  const { t } = useI18n()
+  const { t, lang } = useI18n()
   const [history, setHistory] = useState<HistoryItem[]>(loadHistory)
   const [due, setDue] = useState(0)
 
@@ -95,7 +95,7 @@ export default function Home() {
                 <div>
                   <strong>{h.title}</strong>
                   <small className="muted">
-                    {t(`kind.${h.kind}`)} · {new Date(h.timestamp).toLocaleDateString()}
+                    {t(`kind.${h.kind}`)} · {new Date(h.timestamp).toLocaleDateString(lang)}
                   </small>
                 </div>
               </div>

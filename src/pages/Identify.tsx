@@ -63,6 +63,9 @@ export default function Identify() {
 
       {loading && <Spinner label={t('status.analyzing')} />}
       {error && <ErrorBox message={error} />}
+      {error && !loading && photo && (
+        <button className="btn" onClick={analyze}>{t('err.retry')}</button>
+      )}
       {result && <PlantCard plant={result} />}
       {result && (
         <div className="btn-row">

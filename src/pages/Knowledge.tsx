@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import PhotoInput from '../components/PhotoInput'
 import PlantCard from '../components/PlantCard'
 import { ApiKeyGate, EmptyState, ErrorBox, Spinner } from '../components/Status'
@@ -17,6 +17,7 @@ export default function Knowledge() {
   const [suggestions, setSuggestions] = useState<string[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const lastRun = useRef<(() => void) | null>(null)
 
   const run = async (
     fn: () => Promise<PlantProfile>,
@@ -24,6 +25,7 @@ export default function Knowledge() {
     thumb?: string,
     suggestQuery?: string,
   ) => {
+    lastRun.current = () => void run(fn, title, thumb, suggestQuery)
     setLoading(true)
     setError(null)
     setResult(null)
@@ -93,6 +95,9 @@ export default function Knowledge() {
 
       {loading && <Spinner label={t('know.looking')} />}
       {error && <ErrorBox message={error} />}
+      {error && !loading && (
+        <button className="btn" onClick={() => lastRun.current?.()}>{t('err.retry')}</button>
+      )}
       {suggestions.length > 0 && (
         <div className="card">
           <h3>{t('know.suggest')}</h3>

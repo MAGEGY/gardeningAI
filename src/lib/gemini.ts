@@ -5,6 +5,24 @@ const API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models'
 
 export class GeminiError extends Error {}
 
+const delay = (ms: number) => new Promise<void>((r) => setTimeout(r, ms))
+const RETRYABLE = new Set([429, 500, 502, 503, 504])
+const OVERLOAD_RE = /high demand|overloaded|temporarily/i
+
+/** Friendly, localized message for "model overloaded" responses. */
+const BUSY_MSG: Record<string, string> = {
+  English: 'The AI service is busy right now — please try again in a minute.',
+  Arabic: 'خدمة الذكاء الاصطناعي مشغولة حاليًا — حاول مرة أخرى بعد دقيقة.',
+  French: 'Le service IA est momentanément surchargé — réessayez dans une minute.',
+  Spanish: 'El servicio de IA está saturado en este momento — inténtalo de nuevo en un minuto.',
+  German: 'Der KI-Dienst ist gerade überlastet — bitte in einer Minute erneut versuchen.',
+  Italian: 'Il servizio IA è momentaneamente sovraccarico — riprova tra un minuto.',
+  Portuguese: 'O serviço de IA está sobrecarregado neste momento — tente novamente em um minuto.',
+  Russian: 'Сервис ИИ сейчас перегружен — попробуйте снова через минуту.',
+  Turkish: 'Yapay zeka servisi şu anda yoğun — bir dakika sonra tekrar deneyin.',
+  Hindi: 'AI सेवा इस समय व्यस्त है — कृपया एक मिनट में फिर से प्रयास करें।',
+}
+
 const STR = { type: 'STRING' }
 const STR_ARR = { type: 'ARRAY', items: { type: 'STRING' } }
 
@@ -156,28 +174,31 @@ async function generate<T>(settings: Settings, parts: unknown[], schema: object)
   }
   const model = settings.model.trim().replace(/^models\//, '') || 'gemini-3.8-flash'
 
-  let res: Response
-  try {
-    res = await fetch(
-      `${API_BASE}/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`,
-      {
+  const url = `${API_BASE}/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`
+  const body = JSON.stringify({
+    contents: [{ role: 'user', parts }],
+    generationConfig: {
+      responseMimeType: 'application/json',
+      responseSchema: schema,
+      temperature: 0.3,
+    },
+  })
+
+  // transient failures (overload, rate limit, network blip) get two quick retries
+  let res: Response | null = null
+  let lastMsg = 'Network error — could not reach the Gemini API.'
+  for (let attempt = 0; attempt < 3; attempt++) {
+    if (attempt > 0) await delay(1200 * attempt)
+    try {
+      res = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ role: 'user', parts }],
-          generationConfig: {
-            responseMimeType: 'application/json',
-            responseSchema: schema,
-            temperature: 0.3,
-          },
-        }),
-      },
-    )
-  } catch {
-    throw new GeminiError('Network error — could not reach the Gemini API.')
-  }
-
-  if (!res.ok) {
+        body,
+      })
+    } catch {
+      continue
+    }
+    if (res.ok) break
     let msg = `Gemini request failed (HTTP ${res.status})`
     try {
       const err = await res.json()
@@ -185,7 +206,17 @@ async function generate<T>(settings: Settings, parts: unknown[], schema: object)
     } catch {
       /* keep default */
     }
-    if (res.status === 429) msg += ' — you may have hit the free-tier rate limit; wait a moment and retry.'
+    lastMsg = msg
+    if (!RETRYABLE.has(res.status)) break
+  }
+
+  if (!res || !res.ok) {
+    let msg = lastMsg
+    if (OVERLOAD_RE.test(msg)) {
+      msg = BUSY_MSG[settings.language] ?? msg
+    } else if (res?.status === 429) {
+      msg += ' — you may have hit the free-tier rate limit; wait a moment and retry.'
+    }
     throw new GeminiError(msg)
   }
 

@@ -28,10 +28,10 @@ export function detectLocation(): Promise<GeolocationCoordinates> {
 }
 
 /** Friendly place name for coordinates — free, no key. */
-export async function reverseGeocode(lat: number, lon: number): Promise<string> {
+export async function reverseGeocode(lat: number, lon: number, lang = 'en'): Promise<string> {
   try {
     const res = await fetch(
-      `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`,
+      `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=${lang}`,
     )
     const data = await res.json()
     return data.city || data.locality || data.principalSubdivision || `${lat.toFixed(2)}, ${lon.toFixed(2)}`
@@ -41,9 +41,9 @@ export async function reverseGeocode(lat: number, lon: number): Promise<string> 
 }
 
 /** Name -> coordinates via Open-Meteo geocoding (free, no key). */
-export async function geocode(name: string): Promise<StoredLocation | null> {
+export async function geocode(name: string, lang = 'en'): Promise<StoredLocation | null> {
   const res = await fetch(
-    `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(name)}&count=1&language=en`,
+    `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(name)}&count=1&language=${lang}`,
   )
   const data = await res.json()
   const hit = data?.results?.[0]

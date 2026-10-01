@@ -60,6 +60,9 @@ export default function Health() {
 
       {loading && <Spinner label={t('health.examining')} />}
       {error && <ErrorBox message={error} />}
+      {error && !loading && photo && (
+        <button className="btn" onClick={analyze}>{t('err.retry')}</button>
+      )}
       {result && <DiagnosisCard dx={result} />}
       {result && (
         <>

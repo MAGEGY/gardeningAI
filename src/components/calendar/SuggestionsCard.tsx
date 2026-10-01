@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { ApiKeyGate, ErrorBox, Spinner } from '../Status'
 import { useI18n } from '../../i18n'
+import { builtinQuotaLeft } from '../../lib/builtinKey'
 import { seasonalPlan } from '../../lib/gemini'
 import { loadSettings } from '../../lib/storage'
 import type { SeasonalPlan, StoredLocation, WeatherNow } from '../../types'
@@ -8,6 +9,8 @@ import type { SeasonalPlan, StoredLocation, WeatherNow } from '../../types'
 const PLAN_CACHE = 'gardening.plans.v1'
 
 type PlanCache = Record<string, SeasonalPlan>
+
+const canCallAi = () => Boolean(loadSettings().apiKey.trim()) || builtinQuotaLeft() > 0
 
 function loadPlans(): PlanCache {
   try {
@@ -51,7 +54,7 @@ export default function SuggestionsCard({
         return
       }
     }
-    if (!loadSettings().apiKey) {
+    if (!canCallAi()) {
       setPlan(null)
       return
     }
@@ -92,16 +95,19 @@ export default function SuggestionsCard({
     <div className="card">
       <div className="section-head">
         <h3>{t('cal.suggest')} — {monthLabel}</h3>
-        {loc && loadSettings().apiKey && (
+        {loc && canCallAi() && (
           <button className="btn small" onClick={() => void loadPlan(true)} disabled={loading}>
             {t('cal.refresh')}
           </button>
         )}
       </div>
       {!loc && <p className="muted small">{t('cal.loc.none')}</p>}
-      {loc && !loadSettings().apiKey && <ApiKeyGate />}
+      {loc && !loadSettings().apiKey.trim() && <ApiKeyGate />}
       {loading && <Spinner label={t('cal.suggest.load')} />}
       {err && <ErrorBox message={err} />}
+      {err && !loading && (
+        <button className="btn" onClick={() => void loadPlan(true)}>{t('err.retry')}</button>
+      )}
       {plan && (
         <>
           {plan.summary && <p className="lead">{plan.summary}</p>}

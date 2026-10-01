@@ -7,5 +7,12 @@ export function notifyDueTasks(count: number, body: string): void {
   if (typeof Notification === 'undefined' || Notification.permission !== 'granted') return
   if (localStorage.getItem(NOTIF_LAST) === todayISO()) return
   localStorage.setItem(NOTIF_LAST, todayISO())
-  new Notification('Gardening AI', { body: `${count} ${body}` })
+  const opts = { body: `${count} ${body}`, icon: `${import.meta.env.BASE_URL}icon.svg` }
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.ready
+      .then((reg) => reg.showNotification('Gardening AI', opts))
+      .catch(() => { try { new Notification('Gardening AI', opts) } catch { /* unsupported */ } })
+  } else {
+    try { new Notification('Gardening AI', opts) } catch { /* unsupported */ }
+  }
 }

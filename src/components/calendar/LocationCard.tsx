@@ -22,7 +22,7 @@ export default function LocationCard({
   onLocChange: (l: StoredLocation | null) => void
   onWeather: (w: WeatherNow | null) => void
 }) {
-  const { t } = useI18n()
+  const { t, lang } = useI18n()
   const [city, setCity] = useState('')
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState<string | null>(null)
@@ -32,7 +32,7 @@ export default function LocationCard({
     setErr(null)
     try {
       const c = await detectLocation()
-      const label = await reverseGeocode(c.latitude, c.longitude)
+      const label = await reverseGeocode(c.latitude, c.longitude, lang)
       const l = { lat: c.latitude, lon: c.longitude, label }
       onLocChange(l)
       saveLocation(l)
@@ -48,7 +48,7 @@ export default function LocationCard({
     setBusy(true)
     setErr(null)
     try {
-      const hit = await geocode(city.trim())
+      const hit = await geocode(city.trim(), lang)
       if (hit) {
         onLocChange(hit)
         saveLocation(hit)
