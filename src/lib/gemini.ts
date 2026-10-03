@@ -1,5 +1,14 @@
 import type { CapturedPhoto, Diagnosis, PlantProfile, SeasonalPlan, Settings } from '../types'
 import { builtinApiKey, builtinQuotaLeft, consumeBuiltin } from './builtinKey'
+import {
+  SHAPES,
+  normalizeDiagnosis,
+  normalizePlant,
+  normalizeSeasonal,
+  pollinationsChat,
+  parseJSONLoose,
+  wikiPlantProfile,
+} from './fallback'
 
 const API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models'
 
@@ -246,7 +255,19 @@ export async function identifyPlant(settings: Settings, photo: CapturedPhoto): P
     'If you are not fully certain of the species, put the most likely match in the main fields and list alternatives.',
     `Write all human-readable text in ${settings.language || 'English'}. Keep scientific names in Latin.`,
   ].join(' ')
-  return generate<PlantProfile>(settings, [{ text: prompt }, imagePart(photo)], plantSchema)
+  try {
+    return await generate<PlantProfile>(settings, [{ text: prompt }, imagePart(photo)], plantSchema)
+  } catch (err) {
+    try {
+      const text = await pollinationsChat([
+        { type: 'text', text: `${prompt}\nRespond with ONLY a JSON object (no markdown) with this exact shape:\n${SHAPES.plant}` },
+        { type: 'image_url', image_url: { url: `data:${photo.mimeType};base64,${photo.base64}` } },
+      ])
+      return normalizePlant(parseJSONLoose(text))
+    } catch {
+      throw err
+    }
+  }
 }
 
 export async function diagnosePlant(settings: Settings, photo: CapturedPhoto): Promise<Diagnosis> {
@@ -258,7 +279,19 @@ export async function diagnosePlant(settings: Settings, photo: CapturedPhoto): P
     'If the image does not show a plant, set isPlant=false and explain in summary.',
     `Write all human-readable text in ${settings.language || 'English'}.`,
   ].join(' ')
-  return generate<Diagnosis>(settings, [{ text: prompt }, imagePart(photo)], diagnosisSchema)
+  try {
+    return await generate<Diagnosis>(settings, [{ text: prompt }, imagePart(photo)], diagnosisSchema)
+  } catch (err) {
+    try {
+      const text = await pollinationsChat([
+        { type: 'text', text: `${prompt}\nRespond with ONLY a JSON object (no markdown) with this exact shape:\n${SHAPES.diag}` },
+        { type: 'image_url', image_url: { url: `data:${photo.mimeType};base64,${photo.base64}` } },
+      ])
+      return normalizeDiagnosis(parseJSONLoose(text))
+    } catch {
+      throw err
+    }
+  }
 }
 
 export async function searchPlant(settings: Settings, query: string): Promise<PlantProfile> {
@@ -270,7 +303,22 @@ export async function searchPlant(settings: Settings, query: string): Promise<Pl
     'Fill every field with practical, specific information a gardener can act on.',
     `Write all human-readable text in ${settings.language || 'English'}. Keep scientific names in Latin.`,
   ].join(' ')
-  return generate<PlantProfile>(settings, [{ text: prompt }], plantSchema)
+  try {
+    return await generate<PlantProfile>(settings, [{ text: prompt }], plantSchema)
+  } catch (err) {
+    try {
+      const text = await pollinationsChat([
+        { type: 'text', text: `${prompt}\nRespond with ONLY a JSON object (no markdown) with this exact shape:\n${SHAPES.plant}` },
+      ])
+      return normalizePlant(parseJSONLoose(text))
+    } catch {
+      try {
+        return await wikiPlantProfile(settings, query)
+      } catch {
+        throw err
+      }
+    }
+  }
 }
 
 const suggestSchema = {
@@ -287,8 +335,22 @@ export async function suggestPlants(settings: Settings, query: string): Promise<
     'List up to 6 real plants that are the closest or most likely intended matches — fix spelling, transliteration, or language issues.',
     `Output only plant names in ${settings.language || 'English'}.`,
   ].join(' ')
-  const r = await generate<{ suggestions: string[] }>(settings, [{ text: prompt }], suggestSchema)
-  return r.suggestions ?? []
+  try {
+    const r = await generate<{ suggestions: string[] }>(settings, [{ text: prompt }], suggestSchema)
+    return r.suggestions ?? []
+  } catch {
+    try {
+      const text = await pollinationsChat([
+        { type: 'text', text: `${prompt}\nRespond with ONLY a JSON object (no markdown): {"suggestions": string[]}` },
+      ])
+      const r = parseJSONLoose(text) as { suggestions?: unknown }
+      return Array.isArray(r.suggestions)
+        ? r.suggestions.filter((s): s is string => typeof s === 'string')
+        : []
+    } catch {
+      return []
+    }
+  }
 }
 
 export async function seasonalPlan(
@@ -305,7 +367,18 @@ export async function seasonalPlan(
     'Keep notes short and practical.',
     `Write all human-readable text in ${settings.language || 'English'}.`,
   ].join(' ')
-  return generate<SeasonalPlan>(settings, [{ text: prompt }], seasonalSchema)
+  try {
+    return await generate<SeasonalPlan>(settings, [{ text: prompt }], seasonalSchema)
+  } catch (err) {
+    try {
+      const text = await pollinationsChat([
+        { type: 'text', text: `${prompt}\nRespond with ONLY a JSON object (no markdown) with this exact shape:\n${SHAPES.season}` },
+      ])
+      return normalizeSeasonal(parseJSONLoose(text))
+    } catch {
+      throw err
+    }
+  }
 }
 
 export async function testConnection(settings: Settings): Promise<boolean> {
