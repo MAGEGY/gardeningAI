@@ -64,6 +64,8 @@ export default function App() {
           <span>{t('nav.calendar')}</span>
         </NavLink>
       </nav>
+
+      <HelpWidget />
     </HashRouter>
   )
 }
