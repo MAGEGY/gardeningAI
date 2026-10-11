@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import { useI18n } from '../i18n'
 import FloatingHelp from './FloatingHelp'
 import type { HelpHowTo } from './FloatingHelp'
 
@@ -12,9 +13,11 @@ const HELP_HOWTOS: HelpHowTo[] = [
 
 export default function HelpWidget() {
   const navigate = useNavigate()
+  const { dir } = useI18n()
   return (
     <FloatingHelp
       color="#2e7d32"
+      rtl={dir === 'rtl'}
       functions={[
         { label: 'Home', description: 'Your plants overview', action: () => navigate('/') },
         { label: 'Identify a plant', description: 'Recognize a plant from a photo with AI', action: () => navigate('/identify') },
